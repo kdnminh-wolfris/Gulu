@@ -49,8 +49,8 @@ public class TranslateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final Button switchButton = view.findViewById(R.id.buttonSwitchLang);
-        final ToggleButton sourceSyncButton = view.findViewById(R.id.buttonSyncSource);
-        final ToggleButton targetSyncButton = view.findViewById(R.id.buttonSyncTarget);
+        final Button sourceSyncButton = view.findViewById(R.id.buttonSyncSource);
+        final Button targetSyncButton = view.findViewById(R.id.buttonSyncTarget);
         final TextInputEditText srcTextView = view.findViewById(R.id.sourceText);
         final TextView targetTextView = view.findViewById(R.id.targetText);
         final TextView downloadedModelsTextView = view.findViewById(R.id.downloadedModels);
@@ -74,13 +74,18 @@ public class TranslateFragment extends Fragment {
         sourceLangSelector.setAdapter(adapter);
         targetLangSelector.setAdapter(adapter);
         sourceLangSelector.setSelection(adapter.getPosition(new TranslateViewModel.Language("en")));
-        targetLangSelector.setSelection(adapter.getPosition(new TranslateViewModel.Language("es")));
+        targetLangSelector.setSelection(adapter.getPosition(new TranslateViewModel.Language("vi")));
         sourceLangSelector.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         setProgressText(targetTextView);
                         viewModel.sourceLang.setValue(adapter.getItem(position));
+                        TranslateViewModel.Language language =
+                                adapter.getItem(sourceLangSelector.getSelectedItemPosition());
+                        if (!viewModel.getAvailableLanguages().contains(language)){
+                            viewModel.downloadLanguage(language);
+                        }
                     }
 
                     @Override
@@ -94,6 +99,11 @@ public class TranslateFragment extends Fragment {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         setProgressText(targetTextView);
                         viewModel.targetLang.setValue(adapter.getItem(position));
+                        TranslateViewModel.Language language =
+                                adapter.getItem(sourceLangSelector.getSelectedItemPosition());
+                        if (!viewModel.getAvailableLanguages().contains(language)){
+                            viewModel.downloadLanguage(language);
+                        }
                     }
 
                     @Override
@@ -113,33 +123,27 @@ public class TranslateFragment extends Fragment {
                     }
                 });
 
-        // Set up toggle buttons to delete or download remote models locally.
-        sourceSyncButton.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        TranslateViewModel.Language language =
+        sourceSyncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TranslateViewModel.Language language =
                                 adapter.getItem(sourceLangSelector.getSelectedItemPosition());
-                        if (isChecked) {
-                            viewModel.downloadLanguage(language);
-                        } else {
-                            viewModel.deleteLanguage(language);
-                        }
-                    }
-                });
-        targetSyncButton.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        TranslateViewModel.Language language =
-                                adapter.getItem(targetLangSelector.getSelectedItemPosition());
-                        if (isChecked) {
-                            viewModel.downloadLanguage(language);
-                        } else {
-                            viewModel.deleteLanguage(language);
-                        }
-                    }
-                });
+                if (viewModel.getAvailableLanguages().contains(language)){
+                    viewModel.deleteLanguage(language);
+                }
+            }
+        });
+
+        targetSyncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TranslateViewModel.Language language =
+                        adapter.getItem(targetLangSelector.getSelectedItemPosition());
+                if (viewModel.getAvailableLanguages().contains(language)){
+                    viewModel.deleteLanguage(language);
+                }
+            }
+        });
 
         // Translate input text as it is typed
         srcTextView.addTextChangedListener(
@@ -178,12 +182,6 @@ public class TranslateFragment extends Fragment {
                         String output =
                                 getContext().getString(R.string.downloaded_models_label, translateRemoteModels);
                         downloadedModelsTextView.setText(output);
-                        sourceSyncButton.setChecked(
-                                translateRemoteModels.contains(
-                                        adapter.getItem(sourceLangSelector.getSelectedItemPosition()).getCode()));
-                        targetSyncButton.setChecked(
-                                translateRemoteModels.contains(
-                                        adapter.getItem(targetLangSelector.getSelectedItemPosition()).getCode()));
                     }
                 });
     }

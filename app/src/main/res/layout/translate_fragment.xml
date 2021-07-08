@@ -70,7 +70,7 @@
         app:layout_constraintStart_toEndOf="@id/buttonSwitchLang"
         app:layout_constraintTop_toTopOf="@id/sourceLangSelector" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/buttonSyncSource"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="126dp"
@@ -78,15 +78,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:textOff="@string/download_model"
-        android:textOn="@string/delete_model"
+        android:text="@string/delete_model"
         android:textSize="11sp"
         app:layout_constraintBottom_toTopOf="@id/downloadedModels"
         app:layout_constraintEnd_toEndOf="@+id/sourceLangSelector"
         app:layout_constraintStart_toStartOf="@id/sourceLangSelector"
         app:layout_constraintTop_toBottomOf="@id/sourceLangSelector" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/buttonSyncTarget"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="127dp"
@@ -94,8 +93,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textOff="@string/download_model"
-        android:textOn="@string/delete_model"
+        android:text="@string/delete_model"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@id/buttonSyncSource"
         app:layout_constraintEnd_toEndOf="@id/targetLangSelector"
