@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openTranslateActivity() {
-        Intent intentTranslate = new Intent(this, TranslateActivity.class);
-        startActivity(intentTranslate);
+        Intent intent = new Intent(this, ScanActivity.class);
+        startActivity(intent);
     }
 
 //    public void onTranslateView(View view) {
