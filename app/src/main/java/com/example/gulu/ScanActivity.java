@@ -74,6 +74,12 @@ public class ScanActivity  extends AppCompatActivity {
             case R.id.add_image:
                 showImageImportDialog();
                 break;
+            case R.id.go_translate:
+                Intent intentTranslate = new Intent(this, TranslateActivity.class);
+                String result = mResult.getText().toString();
+                intentTranslate.putExtra("result", result);
+                startActivity(intentTranslate);
+                break;
             default:
                 break;
         }

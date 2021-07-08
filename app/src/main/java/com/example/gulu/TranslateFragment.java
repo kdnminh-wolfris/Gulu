@@ -57,8 +57,13 @@ public class TranslateFragment extends Fragment {
         final Spinner sourceLangSelector = view.findViewById(R.id.sourceLangSelector);
         final Spinner targetLangSelector = view.findViewById(R.id.targetLangSelector);
 
+        TranslateActivity translateActivity =(TranslateActivity) getActivity();
+        String textResultFromImage = translateActivity.getTextResultFromImage();
         final TranslateViewModel viewModel = new ViewModelProvider(this).get(TranslateViewModel.class);
-
+        if (textResultFromImage.length() > 0){
+            srcTextView.setText(textResultFromImage);
+            viewModel.sourceText.postValue(textResultFromImage);
+        }
         // Get available language list and set up source and target language spinners
         // with default selections.
         final ArrayAdapter<TranslateViewModel.Language> adapter =

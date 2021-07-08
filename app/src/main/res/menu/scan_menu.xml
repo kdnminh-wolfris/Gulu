@@ -5,4 +5,8 @@
         android:title="Add Image"
         app:showAsAction="always"
         android:icon="@drawable/ic_add_image"/>
+    <item android:id="@+id/go_translate"
+        android:title="Translate"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_translate"/>
 </menu>

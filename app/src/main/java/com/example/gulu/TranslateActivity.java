@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class TranslateActivity extends AppCompatActivity {
+    private String textResultFromImage;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,5 +17,10 @@ public class TranslateActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.container, TranslateFragment.newInstance())
                 .commitNow();
+        textResultFromImage = getIntent().getStringExtra("result");
+    }
+
+    public String getTextResultFromImage() {
+        return textResultFromImage;
     }
 }
