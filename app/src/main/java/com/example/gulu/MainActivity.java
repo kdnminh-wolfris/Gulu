@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        openLoadingActivity();
+
         setContentView(R.layout.activity_main);
         btnTranslate = (Button) findViewById(R.id.btn_translate);
         btnTranslate.setOnClickListener(new View.OnClickListener() {
@@ -27,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void openLoadingActivity() {
+        Intent intent = new Intent(this, LoadingActivity.class);
+        startActivity(intent);
     }
 
     private void openTranslateActivity() {
