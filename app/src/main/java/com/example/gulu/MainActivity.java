@@ -137,9 +137,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openCameraActivity() {
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivity(intent);
     }
 
     private void openGalleryActivity() {
+        Intent intent = new Intent(this, GalleryActivity.class);
+        startActivity(intent);
     }
 
     private void openLibraryActivity() {

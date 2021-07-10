@@ -58,7 +58,6 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Click + button to add image"
                         android:autoLink="all"
                         android:padding="5dp"
                         android:maxHeight="250dp"

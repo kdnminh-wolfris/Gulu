@@ -14,7 +14,8 @@
         android:theme="@style/Theme.Gulu">
         <activity android:name=".LoadingActivity"></activity>
         <activity android:name=".TranslateActivity" />
-        <activity android:name=".ScanActivity" />
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".GalleryActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +25,7 @@
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.Gulu" />
     </application>
 
 </manifest>
