@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -21,10 +23,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView btnGallery;
     private ImageView btnLibrary;
     private int btnDelayTime = 100; //miliseconds
+    private MediaPlayer clickSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
         loadDecodedImage(R.id.gulu_logo, R.drawable.gulu_logo, 196, 100);
@@ -33,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
         loadDecodedImage(R.id.btn_gallery, R.drawable.gallery, 211, 113);
         loadDecodedImage(R.id.btn_library, R.drawable.library, 211, 113);
 
+        clickSound = MediaPlayer.create(this, R.raw.button_click);
+
         btnCamera = findViewById(R.id.btn_camera);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickSound.start();
                 loadDecodedImage(R.id.btn_camera, R.drawable.camera_pressed, 211, 113);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickSound.start();
                 loadDecodedImage(R.id.btn_gallery, R.drawable.gallery_pressed, 211, 113);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -69,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         btnLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickSound.start();
                 loadDecodedImage(R.id.btn_library, R.drawable.library_pressed, 211, 113);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

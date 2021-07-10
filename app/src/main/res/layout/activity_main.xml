@@ -12,7 +12,7 @@
         android:id="@+id/gulu_logo"
         android:layout_width="196dp"
         android:layout_height="100dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="75dp"
         android:layout_gravity="center"
         tools:srcCompat="@drawable/gulu_logo"
         />
@@ -26,25 +26,34 @@
         tools:srcCompat="@drawable/star_line"
         />
 
-    <ImageView
-        android:id="@+id/btn_camera"
-        android:layout_width="211dp"
-        android:layout_height="113dp"
-        android:layout_gravity="center"
-        tools:srcCompat="@drawable/camera" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
 
-    <ImageView
-        android:id="@+id/btn_gallery"
-        android:layout_width="211dp"
-        android:layout_height="113dp"
-        android:layout_gravity="center"
-        tools:srcCompat="@drawable/gallery" />
+        <ImageView
+            android:id="@+id/btn_camera"
+            android:layout_width="211dp"
+            android:layout_height="113dp"
+            android:layout_gravity="center"
+            tools:srcCompat="@drawable/camera" />
 
-    <ImageView
-        android:id="@+id/btn_library"
-        android:layout_width="211dp"
-        android:layout_height="113dp"
-        android:layout_gravity="center"
-        tools:srcCompat="@drawable/library" />
+        <ImageView
+            android:id="@+id/btn_gallery"
+            android:layout_width="211dp"
+            android:layout_height="113dp"
+            android:layout_gravity="center"
+            tools:srcCompat="@drawable/gallery" />
+
+        <ImageView
+            android:id="@+id/btn_library"
+            android:layout_width="211dp"
+            android:layout_height="113dp"
+            android:layout_gravity="center"
+            tools:srcCompat="@drawable/library" />
+
+    </LinearLayout>
 
 </LinearLayout>
