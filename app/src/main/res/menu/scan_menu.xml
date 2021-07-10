@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/add_image"
+        android:title="Add Image"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_image"/>
+    <item android:id="@+id/go_translate"
+        android:title="Translate"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_translate"/>
+</menu>
