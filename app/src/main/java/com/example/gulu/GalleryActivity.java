@@ -1,15 +1,12 @@
 package com.example.gulu;
 
 import android.Manifest;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -34,11 +30,9 @@ public class GalleryActivity extends AppCompatActivity {
     ImageView mPreview;
 
     private static final int STORAGE_REQUEST_CODE = 300;
-    private static final int IMAGE_PICK_GALERY_CODE = 400;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
 
     String storagePermission[];
-
-    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +82,7 @@ public class GalleryActivity extends AppCompatActivity {
     private void pickGalery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICK_GALERY_CODE);
+        startActivityForResult(intent, IMAGE_PICK_GALLERY_CODE);
     }
 
     private void requestStoragePermission() {
@@ -122,7 +116,7 @@ public class GalleryActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK){
-            if (requestCode == IMAGE_PICK_GALERY_CODE){
+            if (requestCode == IMAGE_PICK_GALLERY_CODE){
                 CropImage.activity(data.getData()).setGuidelines(CropImageView.Guidelines.ON)
                         .start(this);
             }
