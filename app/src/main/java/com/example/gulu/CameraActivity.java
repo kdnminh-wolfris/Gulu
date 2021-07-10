@@ -12,15 +12,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,18 +29,14 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class ScanActivity  extends AppCompatActivity {
-
+public class CameraActivity extends AppCompatActivity {
     EditText mResult;
     ImageView mPreview;
 
     private static final int CAMERA_REQUEST_CODE = 200;
-    private static final int STORAGE_REQUEST_CODE = 300;
-    private static final int IMAGE_PICK_GALERY_CODE = 400;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
 
     String cameraPermission[];
-    String storagePermission[];
 
     Uri imageUri;
 
@@ -55,11 +47,15 @@ public class ScanActivity  extends AppCompatActivity {
         mResult = findViewById(R.id.result);
         mPreview = findViewById(R.id.image_preview);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setSubtitle("Click + button to add image");
+        actionBar.setSubtitle("Click + button to take a picture");
 
         cameraPermission = new String[]{Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (!checkCamertaPermission()) {
+            requestCameraPermission();
+        } else {
+            pickCamera();
+        }
     }
 
     @Override
@@ -71,63 +67,22 @@ public class ScanActivity  extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.add_image:
-                showImageImportDialog();
-                break;
             case R.id.go_translate:
                 Intent intentTranslate = new Intent(this, TranslateActivity.class);
                 String result = mResult.getText().toString();
                 intentTranslate.putExtra("result", result);
                 startActivity(intentTranslate);
                 break;
+            case R.id.add_image:
+                if (!checkCamertaPermission()) {
+                    requestCameraPermission();
+                } else {
+                    pickCamera();
+                }
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showImageImportDialog() {
-        String[] items = {" Camera ", " Galery "};
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Select Image");
-        dialog.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    //Camera option clicked
-                    if (!checkCamertaPermission()) {
-                        requestCameraPermission();
-                    } else {
-                        pickCamera();
-                    }
-                }
-                if (which == 1){
-                    //Galery ontion clicked
-                    if (!checkStoragePermission()){
-                        requestStoragePermission();
-                    } else {
-                        pickGalery(); 
-                    }
-                }
-            }
-        });
-        dialog.create().show();
-    }
-
-    private void pickGalery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICK_GALERY_CODE);
-    }
-
-    private void requestStoragePermission() {
-        ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
-    }
-
-    private boolean checkStoragePermission() {
-        boolean resultWriteStorage = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        return resultWriteStorage;
     }
 
     private void pickCamera() {
@@ -166,15 +121,7 @@ public class ScanActivity  extends AppCompatActivity {
                     }
                 }
                 break;
-            case STORAGE_REQUEST_CODE:
-                if(grantResults.length > 0){
-                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (writeStorageAccepted) {
-                        pickGalery();
-                    } else {
-                        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-                    }
-                }
+            default:
                 break;
         }
     }
@@ -182,10 +129,6 @@ public class ScanActivity  extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK){
-            if (requestCode == IMAGE_PICK_GALERY_CODE){
-                CropImage.activity(data.getData()).setGuidelines(CropImageView.Guidelines.ON)
-                .start(this);
-            }
             if (requestCode == IMAGE_PICK_CAMERA_CODE){
                 CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
                         .start(this);
