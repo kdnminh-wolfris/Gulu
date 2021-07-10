@@ -10,26 +10,47 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
-   private  Button btnTranslate;
+    private ImageView btnCamera;
+    private ImageView btnGallery;
+    private ImageView btnLibrary;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        openLoadingActivity();
-
         setContentView(R.layout.activity_main);
-        btnTranslate = (Button) findViewById(R.id.btn_translate);
-        btnTranslate.setOnClickListener(new View.OnClickListener() {
+
+        btnCamera = findViewById(R.id.btn_camera);
+        btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTranslateActivity();
-//                Intent intentTranslate = new Intent(v.getContext(), TranslateActivity.class);
-//                startActivity(intentTranslate);
+                btnCamera.setImageResource(R.drawable.camera_pressed);
+                openCameraActivity();
+                btnCamera.setImageResource(R.drawable.camera);
             }
         });
 
+        btnGallery = findViewById(R.id.btn_gallery);
+        btnGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnGallery.setImageResource(R.drawable.gallery_pressed);
+                openGalleryActivity();
+                btnGallery.setImageResource(R.drawable.gallery);
+            }
+        });
+
+        btnLibrary = findViewById(R.id.btn_library);
+        btnLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnLibrary.setImageResource(R.drawable.library_pressed);
+                openLibraryActivity();
+                btnLibrary.setImageResource(R.drawable.library);
+            }
+        });
     }
 
     private void openLoadingActivity() {
@@ -37,13 +58,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void openTranslateActivity() {
-        Intent intent = new Intent(this, ScanActivity.class);
-        startActivity(intent);
+    private void openCameraActivity() {
     }
 
-//    public void onTranslateView(View view) {
-//        Intent intentTranslate = new Intent(this, TranslateActivity.class);
-//        startActivity(intentTranslate);
-//    }
+    private void openGalleryActivity() {
+    }
+
+    private void openLibraryActivity() {
+    }
 }
