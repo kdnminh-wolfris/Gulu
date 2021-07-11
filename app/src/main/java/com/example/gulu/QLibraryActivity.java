@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,12 +20,23 @@ public class QLibraryActivity extends AppCompatActivity {
     private ArrayList<QHistoryItem> historyItems;
     private RecyclerView mRecyclerView;
     private QHistoryAdapter mAdapter;
+    private Button deleteAllBtn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library_fragment);
+
+        deleteAllBtn = findViewById(R.id.deleteAllBtn);
+        deleteAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                database.QueryData("DELETE FROM History");
+                Toast.makeText(QLibraryActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                UpdateData();
+            }
+        });
 
         mRecyclerView = findViewById(R.id.recyclerView);
         historyItems = new ArrayList<>();
@@ -37,6 +50,19 @@ public class QLibraryActivity extends AppCompatActivity {
                 "Content VARCHAR(5000), Image BLOB)");
 
         //Get Data
+        Cursor cursor = database.GetData("SELECT * FROM History");
+        historyItems.clear();
+        while (cursor.moveToNext()){
+            historyItems.add(new QHistoryItem(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getBlob(2)
+            ));
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void UpdateData(){
         Cursor cursor = database.GetData("SELECT * FROM History");
         historyItems.clear();
         while (cursor.moveToNext()){
