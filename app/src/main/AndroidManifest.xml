@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gulu">
-        <activity android:name=".LoadingActivity"></activity>
+        <activity android:name=".QLibraryActivity"></activity>
+        <activity android:name=".LoadingActivity" />
         <activity android:name=".TranslateActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".GalleryActivity" />

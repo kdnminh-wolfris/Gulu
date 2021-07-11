@@ -12,7 +12,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+
 import android.os.Handler;
+
+import android.provider.ContactsContract;
+
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private int btnDelayTime = 100; //miliseconds
     private MediaPlayer clickSound;
 
+   private  Button btnTranslate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 }, btnDelayTime);
             }
         });
+
     }
 
     private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
@@ -134,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
     private void openLoadingActivity() {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
+
     }
 
     private void openCameraActivity() {
@@ -147,5 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openLibraryActivity() {
+        Intent intent = new Intent(this, QLibraryActivity.class);
+        startActivity(intent);
     }
 }

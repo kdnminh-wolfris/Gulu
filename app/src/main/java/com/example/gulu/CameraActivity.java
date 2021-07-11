@@ -27,6 +27,8 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+
 public class CameraActivity extends AppCompatActivity {
     EditText mResult;
     ImageView mPreview;
@@ -140,6 +142,13 @@ public class CameraActivity extends AppCompatActivity {
                 mPreview.setImageURI(resultUri);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable)mPreview.getDrawable();
                 Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                //Transform bitmap -> byte[]
+                Bitmap bitmapLibrary = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                bitmapLibrary.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
+                byte[] image = byteArray.toByteArray();
+
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                 if (!recognizer.isOperational()){
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -154,6 +163,7 @@ public class CameraActivity extends AppCompatActivity {
                         stringBuilder.append("\n");
                     }
                     mResult.setText(stringBuilder.toString());
+                    QLibraryActivity.database.INSERT_HISTORY(stringBuilder.toString(), image);
                 }
             }
             else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
