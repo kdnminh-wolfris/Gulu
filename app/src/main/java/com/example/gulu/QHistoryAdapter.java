@@ -1,6 +1,7 @@
 package com.example.gulu;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHolder> {
 
-    private Context context;
+    private QLibraryActivity context;
     private List<QHistoryItem> historyItemList;
 
-    public QHistoryAdapter(Context context, List<QHistoryItem> historyItemList){
+    public QHistoryAdapter(QLibraryActivity context, List<QHistoryItem> historyItemList){
         this.context = context;
         this.historyItemList = historyItemList;
     }
@@ -47,7 +48,8 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
         holder.historyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QLibraryActivity.database.QueryData("DELETE FROM History WHERE Id = '"+ item.getId() +"'");
+                //QLibraryActivity.database.QueryData("DELETE FROM History WHERE Id = '"+ item.getId() +"'");
+                context.DialogDelete(item.getId());
             }
         });
     }
