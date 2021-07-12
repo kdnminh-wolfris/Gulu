@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView btnLibrary;
     private int btnDelayTime = 100; //miliseconds
     private MediaPlayer clickSound;
+    public static QDatabase database;
 
    private  Button btnTranslate;
     @Override
@@ -35,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        //create database
+        database = new QDatabase(this, "QLibrary.sqlite", null, 1);
+        database.QueryData("CREATE TABLE IF NOT EXISTS History(Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Content VARCHAR(5000), Image BLOB)");
 
         loadDecodedImage(R.id.gulu_logo, R.drawable.gulu_logo, 196, 100);
         loadDecodedImage(R.id.star_line, R.drawable.star_line, 271, 60);

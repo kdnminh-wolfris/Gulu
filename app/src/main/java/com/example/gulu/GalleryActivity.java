@@ -153,7 +153,7 @@ public class GalleryActivity extends AppCompatActivity {
                         stringBuilder.append("\n");
                     }
                     mResult.setText(stringBuilder.toString());
-                    QLibraryActivity.database.INSERT_HISTORY(stringBuilder.toString(), image);
+                    MainActivity.database.INSERT_HISTORY(stringBuilder.toString(), image);
                 }
             }
             else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
