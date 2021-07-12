@@ -31,8 +31,7 @@ public class QLibraryActivity extends AppCompatActivity {
         deleteAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.database.QueryData("DELETE FROM History");
-                Toast.makeText(QLibraryActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                DialogDeleteAll();
                 UpdateData();
             }
         });
@@ -64,7 +63,7 @@ public class QLibraryActivity extends AppCompatActivity {
 
     public void DialogDelete(final int id){
         AlertDialog.Builder dialogDel = new AlertDialog.Builder(this);
-        dialogDel.setMessage("Do you want to delete this translation?");
+        dialogDel.setMessage("Are you sure you want to clear this translation?");
 
         dialogDel.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -82,5 +81,28 @@ public class QLibraryActivity extends AppCompatActivity {
         });
 
         dialogDel.show();
+    }
+
+    public void DialogDeleteAll(){
+        AlertDialog.Builder dialogDelAll = new AlertDialog.Builder(this);
+        dialogDelAll.setMessage("Are you sure you want to clear all history");
+
+        dialogDelAll.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity.database.QueryData("DELETE FROM History");
+                Toast.makeText(QLibraryActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                UpdateData();
+            }
+        });
+        dialogDelAll.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialogDelAll.show();
+
     }
 }
