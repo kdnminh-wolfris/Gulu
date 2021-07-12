@@ -1,26 +1,31 @@
 package com.example.gulu;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
-
 import android.os.Handler;
-
-import android.provider.ContactsContract;
-
+import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView btnCamera;
@@ -30,7 +35,18 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer clickSound;
     public static QDatabase database;
 
-   private  Button btnTranslate;
+
+    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int IMAGE_PICK_CAMERA_CODE = 500;
+    private static final int STORAGE_REQUEST_CODE = 300;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
+
+    String storagePermission[];
+    String cameraPermission[];
+    String scannedText;
+    Uri imageUri;
+    Uri resultUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
         clickSound = MediaPlayer.create(this, R.raw.button_click);
 
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        cameraPermission = new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        scannedText = new String();
+
         btnCamera = findViewById(R.id.btn_camera);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
+                //openTranslateActivity();
             }
         });
 
@@ -100,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 }, btnDelayTime);
             }
         });
-
     }
 
     private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
@@ -146,21 +168,147 @@ public class MainActivity extends AppCompatActivity {
     private void openLoadingActivity() {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
-
     }
 
     private void openCameraActivity() {
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
+        if (!checkCamertaPermission()) {
+            requestCameraPermission();
+        } else {
+            pickCamera();
+        }
     }
 
     private void openGalleryActivity() {
-        Intent intent = new Intent(this, GalleryActivity.class);
-        startActivity(intent);
+        if (!checkStoragePermission()){
+            requestStoragePermission();
+        } else {
+            pickGalery();
+        }
+    }
+
+    private void pickCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "NewPic");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Image To Text");
+        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, cameraPermission, CAMERA_REQUEST_CODE);
+    }
+
+    private boolean checkCamertaPermission() {
+        boolean resultCamera = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean resultWriteStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return resultCamera && resultWriteStorage;
+    }
+
+    private void pickGalery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean resultWriteStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return resultWriteStorage;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        switch (requestCode){
+            case CAMERA_REQUEST_CODE:
+                if(grantResults.length > 0){
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (cameraAccepted && writeStorageAccepted) {
+                        pickCamera();
+                    } else {
+                        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            case STORAGE_REQUEST_CODE:
+                if(grantResults.length > 0){
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (writeStorageAccepted) {
+                        pickGalery();
+                    } else {
+                        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                imageUri = data.getData();
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE || requestCode == IMAGE_PICK_GALLERY_CODE)
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            try {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    resultUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                    if (!recognizer.isOperational()) {
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                        SparseArray<TextBlock> items = recognizer.detect(frame);
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int i = 0; i < items.size(); ++i) {
+                            TextBlock myItem = items.valueAt(i);
+                            stringBuilder.append(myItem.getValue());
+                            stringBuilder.append("\n");
+                        }
+                        scannedText = stringBuilder.toString();
+                    }
+                    openTranslateActivity();
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void openTranslateActivity() {
+        Intent intentTranslate = new Intent(this, TranslateActivity.class);
+        intentTranslate.putExtra("text", scannedText);
+        intentTranslate.putExtra("image", resultUri.toString());
+        startActivity(intentTranslate);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     private void openLibraryActivity() {
-        Intent intent = new Intent(this, QLibraryActivity.class);
-        startActivity(intent);
+        Intent intentLibrary = new Intent(this, QLibraryActivity.class);
+        startActivity(intentLibrary);
     }
 }

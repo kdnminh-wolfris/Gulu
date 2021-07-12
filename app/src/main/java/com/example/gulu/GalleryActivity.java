@@ -35,6 +35,7 @@ public class GalleryActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
 
     String storagePermission[];
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,9 @@ public class GalleryActivity extends AppCompatActivity {
         actionBar.setSubtitle("Click + button to pick an image");
 
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (!checkStoragePermission()){
-            requestStoragePermission();
-        } else {
-            pickGalery();
-        }
+        imageUri = Uri.parse(getIntent().getStringExtra("Image"));
+        CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
     }
 
     @Override
@@ -137,7 +136,6 @@ public class GalleryActivity extends AppCompatActivity {
                 ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
                 bitmapLibrary.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
                 byte[] image = byteArray.toByteArray();
-
 
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                 if (!recognizer.isOperational()){
