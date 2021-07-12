@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
-                openTranslateActivity();
+                //openTranslateActivity();
             }
         });
 
@@ -282,7 +282,43 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        new MyAsyncTask(requestCode, resultCode, data).execute();
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                imageUri = data.getData();
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE || requestCode == IMAGE_PICK_GALLERY_CODE)
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            try {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                    if (!recognizer.isOperational()) {
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                        SparseArray<TextBlock> items = recognizer.detect(frame);
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int i = 0; i < items.size(); ++i) {
+                            TextBlock myItem = items.valueAt(i);
+                            stringBuilder.append(myItem.getValue());
+                            stringBuilder.append("\n");
+                        }
+                        scannedText = stringBuilder.toString();
+                    }
+                    openTranslateActivity();
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void openCropActivity(int requestCode, int resultCode, Intent data) {
@@ -315,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         scannedText = stringBuilder.toString();
                     }
+                    openTranslateActivity();
                 } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
