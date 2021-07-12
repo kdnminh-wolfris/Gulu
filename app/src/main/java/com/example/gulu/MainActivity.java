@@ -3,10 +3,6 @@ package com.example.gulu;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -15,17 +11,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,10 +26,6 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView btnCamera;
@@ -55,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     String cameraPermission[];
     String scannedText;
     Uri imageUri;
+    Uri resultUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,7 +261,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    resultUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
                     TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                     if (!recognizer.isOperational()) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -299,10 +289,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openTranslateActivity() {
-        System.out.println(imageUri);
         Intent intentTranslate = new Intent(this, TranslateActivity.class);
         intentTranslate.putExtra("text", scannedText);
-        intentTranslate.putExtra("image", imageUri.toString());
+        intentTranslate.putExtra("image", resultUri.toString());
         startActivity(intentTranslate);
     }
 
