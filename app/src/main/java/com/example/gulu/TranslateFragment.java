@@ -5,11 +5,16 @@ import android.annotation.SuppressLint;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 
 public class TranslateFragment extends Fragment {
+    private boolean btnOrientation = false;
 
     public static TranslateFragment newInstance() {
         return new TranslateFragment();
@@ -51,12 +57,12 @@ public class TranslateFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Button switchButton = view.findViewById(R.id.buttonSwitchLang);
-        final Button sourceSyncButton = view.findViewById(R.id.buttonSyncSource);
-        final Button targetSyncButton = view.findViewById(R.id.buttonSyncTarget);
+        final ImageView switchButton = view.findViewById(R.id.buttonSwitchLang);
+//        final Button sourceSyncButton = view.findViewById(R.id.buttonSyncSource);
+//        final Button targetSyncButton = view.findViewById(R.id.buttonSyncTarget);
         final TextInputEditText srcTextView = view.findViewById(R.id.sourceText);
         final TextView targetTextView = view.findViewById(R.id.targetText);
-        final TextView downloadedModelsTextView = view.findViewById(R.id.downloadedModels);
+//        final TextView downloadedModelsTextView = view.findViewById(R.id.downloadedModels);
         final Spinner sourceLangSelector = view.findViewById(R.id.sourceLangSelector);
         final Spinner targetLangSelector = view.findViewById(R.id.targetLangSelector);
         final ImageView scanningImage = view.findViewById(R.id.scanningImage);
@@ -116,6 +122,7 @@ public class TranslateFragment extends Fragment {
                     }
                 });
 
+        loadDecodedImage(R.id.buttonSwitchLang, R.drawable.switch_lang, 85, 85);
         switchButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -124,30 +131,35 @@ public class TranslateFragment extends Fragment {
                         int sourceLangPosition = sourceLangSelector.getSelectedItemPosition();
                         sourceLangSelector.setSelection(targetLangSelector.getSelectedItemPosition());
                         targetLangSelector.setSelection(sourceLangPosition);
+                        if (btnOrientation)
+                            loadDecodedImage(R.id.buttonSwitchLang, R.drawable.switch_lang, 85, 85);
+                        else
+                            loadDecodedImage(R.id.buttonSwitchLang, R.drawable.switch_lang_reverse, 85, 85);
+                        btnOrientation = !btnOrientation;
                     }
                 });
 
-        sourceSyncButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TranslateViewModel.Language language =
-                                adapter.getItem(sourceLangSelector.getSelectedItemPosition());
-                if (viewModel.getAvailableLanguages().contains(language)){
-                    viewModel.deleteLanguage(language);
-                }
-            }
-        });
-
-        targetSyncButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TranslateViewModel.Language language =
-                        adapter.getItem(targetLangSelector.getSelectedItemPosition());
-                if (viewModel.getAvailableLanguages().contains(language)){
-                    viewModel.deleteLanguage(language);
-                }
-            }
-        });
+//        sourceSyncButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TranslateViewModel.Language language =
+//                                adapter.getItem(sourceLangSelector.getSelectedItemPosition());
+//                if (viewModel.getAvailableLanguages().contains(language)){
+//                    viewModel.deleteLanguage(language);
+//                }
+//            }
+//        });
+//
+//        targetSyncButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TranslateViewModel.Language language =
+//                        adapter.getItem(targetLangSelector.getSelectedItemPosition());
+//                if (viewModel.getAvailableLanguages().contains(language)){
+//                    viewModel.deleteLanguage(language);
+//                }
+//            }
+//        });
 
         // Translate input text as it is typed
         srcTextView.addTextChangedListener(
@@ -183,11 +195,16 @@ public class TranslateFragment extends Fragment {
                 new Observer<List<String>>() {
                     @Override
                     public void onChanged(@Nullable List<String> translateRemoteModels) {
-                        String output =
-                                getContext().getString(R.string.downloaded_models_label, translateRemoteModels);
-                        downloadedModelsTextView.setText(output);
+//                        String output =
+//                                getContext().getString(R.string.downloaded_models_label, translateRemoteModels);
+//                        downloadedModelsTextView.setText(output);
                     }
                 });
+
+        targetTextView.setMovementMethod(new ScrollingMovementMethod());
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.text_border);
+        targetTextView.setBackground(new BitmapDrawable(getResources(), bitmap));targetTextView.setBackground(new BitmapDrawable(getResources(), bitmap));
+        srcTextView.setBackground(new BitmapDrawable(getResources(), bitmap));targetTextView.setBackground(new BitmapDrawable(getResources(), bitmap));
 
         Uri imageUri = translateActivity.getImageUri();
         scanningImage.setImageURI(imageUri);
@@ -195,5 +212,45 @@ public class TranslateFragment extends Fragment {
 
     private void setProgressText(TextView tv) {
         tv.setText(getContext().getString(R.string.translate_progress));
+    }
+
+    private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
+        ImageView imageView = getView().findViewById(imageViewId);
+        imageView.setImageBitmap(decodeSampleBitmapFromResource(getResources(), imageId, width, height));
+    }
+
+    private Bitmap decodeSampleBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
     }
 }
