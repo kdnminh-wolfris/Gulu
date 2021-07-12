@@ -18,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -34,6 +35,10 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
     private ImageView btnCamera;
     private ImageView btnGallery;
@@ -47,9 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
 
     String storagePermission[];
-
     String cameraPermission[];
-
+    String scannedText;
     Uri imageUri;
 
     @Override
@@ -66,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
 
         clickSound = MediaPlayer.create(this, R.raw.button_click);
 
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        cameraPermission = new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        scannedText = new String();
+
         btnCamera = findViewById(R.id.btn_camera);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
+                openTranslateActivity();
             }
         });
 
@@ -116,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 }, btnDelayTime);
             }
         });
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        cameraPermission = new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
     private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
@@ -171,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
             requestCameraPermission();
         } else {
             pickCamera();
-
         }
     }
 
@@ -250,22 +257,88 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK){
-            if (requestCode == IMAGE_PICK_CAMERA_CODE){
-                Intent intent = new Intent(this, CameraActivity.class);
-                intent.putExtra("Image", imageUri.toString());
-                startActivity(intent);
-            } else if (requestCode == IMAGE_PICK_GALLERY_CODE){
-                Intent intent = new Intent(this, GalleryActivity.class);
-                intent.putExtra("Image", data.getData().toString());
-                startActivity(intent);
-            }
+    private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
+        private int requestCode;
+        private int resultCode;
+        private Intent data;
+
+        public MyAsyncTask(int rqCode, int rsCode, Intent dat) {
+            requestCode = rqCode;
+            resultCode = rsCode;
+            data = dat;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            openCropActivity(requestCode, resultCode, data);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            openTranslateActivity();
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        new MyAsyncTask(requestCode, resultCode, data).execute();
+    }
 
+    private void openCropActivity(int requestCode, int resultCode, Intent data) {
+        System.out.println("hahahahahahahahahahahahahaha");
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                imageUri = data.getData();
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE || requestCode == IMAGE_PICK_GALLERY_CODE)
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            try {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                    if (!recognizer.isOperational()) {
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                        SparseArray<TextBlock> items = recognizer.detect(frame);
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int i = 0; i < items.size(); ++i) {
+                            TextBlock myItem = items.valueAt(i);
+                            stringBuilder.append(myItem.getValue());
+                            stringBuilder.append("\n");
+                        }
+                        scannedText = stringBuilder.toString();
+                    }
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("huhuhuhuhuhuhuhuhuhuhuhuhu");
+    }
+
+    private void openTranslateActivity() {
+        System.out.println("hihihihihihihihihihihihi");
+        System.out.println(imageUri);
+        Intent intentTranslate = new Intent(this, TranslateActivity.class);
+        intentTranslate.putExtra("text", scannedText);
+        intentTranslate.putExtra("image", imageUri.toString());
+        startActivity(intentTranslate);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 
     private void openLibraryActivity() {
     }

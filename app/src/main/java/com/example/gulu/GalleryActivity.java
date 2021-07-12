@@ -34,6 +34,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     String storagePermission[];
     Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

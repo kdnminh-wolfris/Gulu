@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
@@ -15,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -56,6 +59,7 @@ public class TranslateFragment extends Fragment {
         final TextView downloadedModelsTextView = view.findViewById(R.id.downloadedModels);
         final Spinner sourceLangSelector = view.findViewById(R.id.sourceLangSelector);
         final Spinner targetLangSelector = view.findViewById(R.id.targetLangSelector);
+        final ImageView scanningImage = view.findViewById(R.id.scanningImage);
 
         TranslateActivity translateActivity =(TranslateActivity) getActivity();
         String textResultFromImage = translateActivity.getTextResultFromImage();
@@ -184,6 +188,9 @@ public class TranslateFragment extends Fragment {
                         downloadedModelsTextView.setText(output);
                     }
                 });
+
+        Uri imageUri = translateActivity.getImageUri();
+        scanningImage.setImageURI(imageUri);
     }
 
     private void setProgressText(TextView tv) {

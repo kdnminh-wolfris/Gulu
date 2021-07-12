@@ -35,7 +35,6 @@ public class CameraActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
 
     String cameraPermission[];
-
     Uri imageUri;
 
     @Override
