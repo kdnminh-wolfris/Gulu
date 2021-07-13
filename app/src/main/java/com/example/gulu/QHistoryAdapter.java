@@ -81,6 +81,7 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
             historyTextView = itemView.findViewById(R.id.historyTextView);
             historyBtn = itemView.findViewById(R.id.historyBtn);
             historyImageView = itemView.findViewById(R.id.historyImageView);
+
         }
     }
     private void removeItem(int position) {
