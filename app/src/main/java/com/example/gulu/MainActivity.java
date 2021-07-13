@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer clickSound;
     public static QDatabase database;
 
-   private  Button btnTranslate;
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
     private static final int STORAGE_REQUEST_CODE = 300;
