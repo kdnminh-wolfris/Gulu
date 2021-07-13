@@ -49,6 +49,17 @@ public class MainActivity extends AppCompatActivity {
     Uri imageUri;
     Uri resultUri;
 
+    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int IMAGE_PICK_CAMERA_CODE = 500;
+    private static final int STORAGE_REQUEST_CODE = 300;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
+
+    String storagePermission[];
+    String cameraPermission[];
+    String scannedText;
+    Uri imageUri;
+    Uri resultUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
+                //openTranslateActivity();
             }
         });
 
