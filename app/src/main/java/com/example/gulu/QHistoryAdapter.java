@@ -1,11 +1,14 @@
 package com.example.gulu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +65,21 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
                 clickSound.start();
                 //QLibraryActivity.database.QueryData("DELETE FROM History WHERE Id = '"+ item.getId() +"'");
                 context.DialogDelete(item.getId());
+            }
+        });
+
+        //convert bitmap to uri
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+
+        holder.historyImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentTranslate = new Intent(context, TranslateActivity.class);
+                intentTranslate.putExtra("text", item.getString());
+                intentTranslate.putExtra("image", Uri.parse(path).toString());
+                context.startActivity(intentTranslate);
             }
         });
     }
