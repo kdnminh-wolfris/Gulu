@@ -63,7 +63,6 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 clickSound.start();
-                //QLibraryActivity.database.QueryData("DELETE FROM History WHERE Id = '"+ item.getId() +"'");
                 context.DialogDelete(item.getId());
             }
         });

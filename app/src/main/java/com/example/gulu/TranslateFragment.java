@@ -58,11 +58,8 @@ public class TranslateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final ImageView switchButton = view.findViewById(R.id.buttonSwitchLang);
-//        final Button sourceSyncButton = view.findViewById(R.id.buttonSyncSource);
-//        final Button targetSyncButton = view.findViewById(R.id.buttonSyncTarget);
         final TextInputEditText srcTextView = view.findViewById(R.id.sourceText);
         final TextView targetTextView = view.findViewById(R.id.targetText);
-//        final TextView downloadedModelsTextView = view.findViewById(R.id.downloadedModels);
         final Spinner sourceLangSelector = view.findViewById(R.id.sourceLangSelector);
         final Spinner targetLangSelector = view.findViewById(R.id.targetLangSelector);
         final ImageView scanningImage = view.findViewById(R.id.scanningImage);
@@ -139,28 +136,6 @@ public class TranslateFragment extends Fragment {
                     }
                 });
 
-//        sourceSyncButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TranslateViewModel.Language language =
-//                                adapter.getItem(sourceLangSelector.getSelectedItemPosition());
-//                if (viewModel.getAvailableLanguages().contains(language)){
-//                    viewModel.deleteLanguage(language);
-//                }
-//            }
-//        });
-//
-//        targetSyncButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TranslateViewModel.Language language =
-//                        adapter.getItem(targetLangSelector.getSelectedItemPosition());
-//                if (viewModel.getAvailableLanguages().contains(language)){
-//                    viewModel.deleteLanguage(language);
-//                }
-//            }
-//        });
-
         // Translate input text as it is typed
         srcTextView.addTextChangedListener(
                 new TextWatcher() {
@@ -195,9 +170,6 @@ public class TranslateFragment extends Fragment {
                 new Observer<List<String>>() {
                     @Override
                     public void onChanged(@Nullable List<String> translateRemoteModels) {
-//                        String output =
-//                                getContext().getString(R.string.downloaded_models_label, translateRemoteModels);
-//                        downloadedModelsTextView.setText(output);
                     }
                 });
 

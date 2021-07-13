@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
-                //openTranslateActivity();
             }
         });
 
@@ -167,11 +166,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return inSampleSize;
-    }
-
-    private void openLoadingActivity() {
-        Intent intent = new Intent(this, LoadingActivity.class);
-        startActivity(intent);
     }
 
     private void openCameraActivity() {
