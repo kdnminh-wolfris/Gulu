@@ -27,12 +27,27 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+
 public class MainActivity extends AppCompatActivity {
     private ImageView btnCamera;
     private ImageView btnGallery;
     private ImageView btnLibrary;
     private int btnDelayTime = 100; //miliseconds
     private MediaPlayer clickSound;
+    public static QDatabase database;
+
+
+    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int IMAGE_PICK_CAMERA_CODE = 500;
+    private static final int STORAGE_REQUEST_CODE = 300;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
+
+    String storagePermission[];
+    String cameraPermission[];
+    String scannedText;
+    Uri imageUri;
+    Uri resultUri;
 
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
@@ -50,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        //create database
+        database = new QDatabase(this, "QLibrary.sqlite", null, 1);
+        database.QueryData("CREATE TABLE IF NOT EXISTS History(Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Content VARCHAR(5000), Image BLOB)");
 
         loadDecodedImage(R.id.gulu_logo, R.drawable.gulu_logo, 196, 100);
         loadDecodedImage(R.id.star_line, R.drawable.star_line, 271, 60);
@@ -263,6 +283,13 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     resultUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+
+                    //Transform bitmap -> byte[]
+                    Bitmap bitmapLibrary = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                    bitmapLibrary.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
+                    byte[] image = byteArray.toByteArray();
+
                     TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                     if (!recognizer.isOperational()) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -276,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
                             stringBuilder.append("\n");
                         }
                         scannedText = stringBuilder.toString();
+                        MainActivity.database.INSERT_HISTORY(stringBuilder.toString(), image);
                     }
                     openTranslateActivity();
                 } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -301,5 +329,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openLibraryActivity() {
+        Intent intentLibrary = new Intent(this, QLibraryActivity.class);
+        startActivity(intentLibrary);
     }
 }
