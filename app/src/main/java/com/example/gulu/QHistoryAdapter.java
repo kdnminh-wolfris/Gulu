@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.historyImageView.setImageBitmap(bitmap);
         holder.historyTextView.setText(item.getString());
+        holder.historyTextView.setMovementMethod(new ScrollingMovementMethod());
         holder.historyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +72,7 @@ public class QHistoryAdapter extends RecyclerView.Adapter<QHistoryAdapter.ViewHo
             historyTextView = itemView.findViewById(R.id.historyTextView);
             historyBtn = itemView.findViewById(R.id.historyBtn);
             historyImageView = itemView.findViewById(R.id.historyImageView);
+
         }
     }
     private void removeItem(int position) {
