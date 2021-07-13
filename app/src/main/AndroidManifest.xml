@@ -12,10 +12,7 @@
         android:roundIcon="@drawable/gulu_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gulu">
-        <activity android:name=".LoadingActivity"></activity>
         <activity android:name=".TranslateActivity" />
-        <activity android:name=".CameraActivity" />
-        <activity android:name=".GalleryActivity" />
         <activity android:name=".QLibraryActivity" android:configChanges="orientation|screenSize"/>
         <activity android:name=".MainActivity">
             <intent-filter>
