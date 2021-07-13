@@ -37,18 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer clickSound;
     public static QDatabase database;
 
-
-    private static final int CAMERA_REQUEST_CODE = 200;
-    private static final int IMAGE_PICK_CAMERA_CODE = 500;
-    private static final int STORAGE_REQUEST_CODE = 300;
-    private static final int IMAGE_PICK_GALLERY_CODE = 400;
-
-    String storagePermission[];
-    String cameraPermission[];
-    String scannedText;
-    Uri imageUri;
-    Uri resultUri;
-
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
     private static final int STORAGE_REQUEST_CODE = 300;
