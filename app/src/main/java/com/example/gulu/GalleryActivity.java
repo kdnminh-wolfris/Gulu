@@ -137,7 +137,6 @@ public class GalleryActivity extends AppCompatActivity {
                 bitmapLibrary.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
                 byte[] image = byteArray.toByteArray();
 
-
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                 if (!recognizer.isOperational()){
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();

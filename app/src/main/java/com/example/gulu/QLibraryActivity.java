@@ -6,10 +6,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,20 +25,36 @@ public class QLibraryActivity extends AppCompatActivity {
     private ArrayList<QHistoryItem> historyItems;
     private RecyclerView mRecyclerView;
     private QHistoryAdapter mAdapter;
-    private Button deleteAllBtn;
-
+    private ImageView deleteAllBtn;
+    private MediaPlayer clickSound;
+    private int btnDelayTime = 100; //miliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.library_fragment);
 
+        clickSound = MediaPlayer.create(this, R.raw.button_click);
+
         deleteAllBtn = findViewById(R.id.deleteAllBtn);
+        loadDecodedImage(R.id.deleteAllBtn, R.drawable.clear_all, 150, 75);
+
         deleteAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogDeleteAll();
-                UpdateData();
+                clickSound.start();
+                loadDecodedImage(R.id.deleteAllBtn, R.drawable.clear_all_pressed, 150, 75);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        DialogDeleteAll();
+                        UpdateData();
+                        loadDecodedImage(R.id.deleteAllBtn, R.drawable.clear_all, 150, 75);
+                    }
+                }, btnDelayTime);
+
             }
         });
 
@@ -104,5 +126,45 @@ public class QLibraryActivity extends AppCompatActivity {
 
         dialogDelAll.show();
 
+    }
+
+    private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
+        ImageView imageView = findViewById(imageViewId);
+        imageView.setImageBitmap(decodeSampleBitmapFromResource(getResources(), imageId, width, height));
+    }
+
+    private Bitmap decodeSampleBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
     }
 }

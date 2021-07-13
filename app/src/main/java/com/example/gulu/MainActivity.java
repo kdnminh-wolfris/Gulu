@@ -14,7 +14,6 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.os.Handler;
 
 import android.provider.ContactsContract;
@@ -30,6 +29,8 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView btnCamera;
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 }, btnDelayTime);
             }
         });
-
     }
 
     private void loadDecodedImage(int imageViewId, int imageId, int width, int height) {
@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
     private void openLoadingActivity() {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
-
     }
 
     private void openCameraActivity() {
@@ -276,6 +275,13 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     resultUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+
+                    //Transform bitmap -> byte[]
+                    Bitmap bitmapLibrary = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                    bitmapLibrary.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
+                    byte[] image = byteArray.toByteArray();
+
                     TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
                     if (!recognizer.isOperational()) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -289,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
                             stringBuilder.append("\n");
                         }
                         scannedText = stringBuilder.toString();
+                        MainActivity.database.INSERT_HISTORY(stringBuilder.toString(), image);
                     }
                     openTranslateActivity();
                 } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -314,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openLibraryActivity() {
-        Intent intent = new Intent(this, QLibraryActivity.class);
-        startActivity(intent);
+        Intent intentLibrary = new Intent(this, QLibraryActivity.class);
+        startActivity(intentLibrary);
     }
 }
