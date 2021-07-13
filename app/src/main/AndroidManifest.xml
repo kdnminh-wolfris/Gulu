@@ -16,7 +16,7 @@
         <activity android:name=".TranslateActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".GalleryActivity" />
-        <activity android:name=".QLibraryActivity" />
+        <activity android:name=".QLibraryActivity" android:configChanges="orientation|screenSize"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

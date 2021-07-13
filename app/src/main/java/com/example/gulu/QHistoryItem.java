@@ -1,5 +1,7 @@
 package com.example.gulu;
 
+import android.view.View;
+
 public class QHistoryItem {
     private int id;
     private String content;

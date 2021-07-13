@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                         loadDecodedImage(R.id.btn_camera, R.drawable.camera, 211, 113);
                     }
                 }, btnDelayTime);
-                //openTranslateActivity();
             }
         });
 
