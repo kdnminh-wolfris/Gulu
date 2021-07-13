@@ -16,8 +16,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
-import android.provider.ContactsContract;
-
 import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.View;

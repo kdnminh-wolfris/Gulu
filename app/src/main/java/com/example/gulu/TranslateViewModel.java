@@ -20,7 +20,6 @@ import com.google.mlkit.nl.translate.TranslateRemoteModel;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
-//import com.google.mlkit.samples.nl.translate.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
