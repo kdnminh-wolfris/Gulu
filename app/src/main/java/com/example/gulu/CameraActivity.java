@@ -37,7 +37,6 @@ public class CameraActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
 
     String cameraPermission[];
-
     Uri imageUri;
 
     @Override
@@ -51,11 +50,9 @@ public class CameraActivity extends AppCompatActivity {
 
         cameraPermission = new String[]{Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (!checkCamertaPermission()) {
-            requestCameraPermission();
-        } else {
-            pickCamera();
-        }
+        imageUri = Uri.parse(getIntent().getStringExtra("Image"));
+        CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
     }
 
     @Override
