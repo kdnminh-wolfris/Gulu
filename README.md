@@ -6,7 +6,7 @@ Gulu is an Android app scanning and recognising text from an image for translati
 Watch demo video <a href="https://youtu.be/xdMga2Z7mIU" target="_blank">here</a>.
 
 ## Key Technologies
-Java, SQL, Android Studio, ML Kit
+`Java`, `SQL`, `Android Studio`, `ML Kit`
 
 ## App Structure and Implementation
 In the main screen, there is a menu of three functions: Camera, Gallery and Library.
