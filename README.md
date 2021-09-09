@@ -38,7 +38,7 @@ The image and scanned text after the translation will be stored in device. When 
 
 ## App Flow
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/29631037/132617817-c686e51f-f771-4dce-8b14-ed3a1fe5a3c7.png" alt="Gulu's App Flow"/>
+  <img src="https://user-images.githubusercontent.com/29631037/132629160-2d546a94-2b7b-4c7c-a874-1f377eb61025.png" alt="Gulu's App Flow"/>
 </p>
 
 ## Team Members
