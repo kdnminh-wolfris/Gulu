@@ -1,9 +1,10 @@
 # Gulu
-This is an app for our mid-term project of the subject Mobile Device Application Development (CS426) at University of Science – Vietnam National University in Ho Chi Minh City.
 
 Gulu is an Android app scanning and recognising text from an image for translating. The reasoning behind the name "Gulu" is that it is actually a mispronounced word from "guru", which indicates our initial intention is to help students in studying, like a friendly "guru", especially in reading documents in foreign languages. Although the mechanism of this app is nothing special or new, it was a great opportunity for us to try using ML Kit.
 
 Watch demo video <a href="https://youtu.be/xdMga2Z7mIU" target="_blank">here</a>.
+
+This is an app for our mid-term project of the subject Mobile Device Application Development (CS426) at University of Science – Vietnam National University in Ho Chi Minh City.
 
 ## Key Technologies
 `Java`, `SQL`, `Android Studio`, `ML Kit`
