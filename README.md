@@ -38,3 +38,8 @@ The image and scanned text after the translation will be stored in device. When 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/29631037/132617817-c686e51f-f771-4dce-8b14-ed3a1fe5a3c7.png" alt="Gulu's App Flow"/>
 </p>
+
+## Team Members
+- [Khấu Đặng Nhật Minh](https://www.linkedin.com/in/wolfris/) – (student ID: 19125011)
+- Nguyễn Khánh Nguyên – (student ID: 19125109)
+- Nguyễn Duy Anh Quốc – (student ID: 19125117)
