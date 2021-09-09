@@ -41,7 +41,7 @@ The image and scanned text after the translation will be stored in device. When 
   <img src="https://user-images.githubusercontent.com/29631037/132629160-2d546a94-2b7b-4c7c-a874-1f377eb61025.png" alt="Gulu's App Flow"/>
 </p>
 
-## Team Members
-- [Khấu Đặng Nhật Minh](https://www.linkedin.com/in/wolfris/) – (student ID: 19125011)
-- [Nguyễn Khánh Nguyên](https://www.linkedin.com/in/nguyen-khanh-nguyen/) – (student ID: 19125109)
-- [Nguyễn Duy Anh Quốc](https://www.linkedin.com/in/qu%E1%BB%91c-nguy%E1%BB%85n-duy-anh-28a65020a/) – (student ID: 19125117)
+## Team Members (LinkedIn Profiles)
+- [Khấu Đặng Nhật Minh](https://www.linkedin.com/in/wolfris/) (student ID: 19125011)
+- [Nguyễn Khánh Nguyên](https://www.linkedin.com/in/nguyen-khanh-nguyen/) (student ID: 19125109)
+- [Nguyễn Duy Anh Quốc](https://www.linkedin.com/in/qu%E1%BB%91c-nguy%E1%BB%85n-duy-anh-28a65020a/) (student ID: 19125117)
