@@ -46,5 +46,3 @@ The image and scanned text after the translation will be stored in device. When 
 - [Khấu Đặng Nhật Minh](https://www.linkedin.com/in/wolfris/) (student ID: 19125011)
 - [Nguyễn Khánh Nguyên](https://www.linkedin.com/in/nguyen-khanh-nguyen/) (student ID: 19125109)
 - [Nguyễn Duy Anh Quốc](https://www.linkedin.com/in/qu%E1%BB%91c-nguy%E1%BB%85n-duy-anh-28a65020a/) (student ID: 19125117)
-
-xyzabc
